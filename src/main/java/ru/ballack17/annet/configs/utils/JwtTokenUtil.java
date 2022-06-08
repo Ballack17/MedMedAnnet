@@ -1,6 +1,7 @@
-package inside.test.utils;
+package ru.ballack17.annet.configs.utils;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
@@ -8,6 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -15,17 +17,14 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-/**
- * класс генерации Токена и работы с ним
- * */
 
 @Component
 public class JwtTokenUtil {
 
-    @Value("${jwt.secret}")
+    @Value("testmegasecrethqwuilrhlwqhriouj2143u2u35u34jo5j4tl6kym5kl67yh5")
     private String secret;
 
-    @Value("${jwt.lifetime}")
+    @Value("36000000")
     private Integer jwtLifeTime;
 
     public String generateToken(UserDetails userDetails) {
@@ -45,6 +44,17 @@ public class JwtTokenUtil {
                 .signWith(SignatureAlgorithm.HS256, secret)
                 .compact();
 
+    }
+
+    public String getNameFromToken(HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+        String username = null;
+        String jwt = null;
+
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            jwt = authHeader.substring(7);
+        }
+        return getClaimFromToken(jwt, Claims::getSubject);
     }
 
     public String getNameFromToken(String token) {

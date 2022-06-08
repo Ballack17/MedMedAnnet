@@ -9,7 +9,7 @@ import java.util.UUID;
 
 @Data
 @RequiredArgsConstructor
-public class QuestionnaireOpenDto {
+public class QuestionnaireDto {
 
     @NonNull
     private UUID question_id;

@@ -1,4 +1,4 @@
-package inside.test.configs;
+package ru.ballack17.annet.configs;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -31,7 +31,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/api/v1/message").authenticated()
+                .antMatchers("/registration").permitAll()
+                .antMatchers("/api/v1/**").authenticated()
                 .antMatchers("/auth").permitAll()
                 .anyRequest().authenticated()
                 .and()

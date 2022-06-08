@@ -29,13 +29,15 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     public void createUser(UserDto userDto) {
-        User user = userMapper.toUser(userDto);
-        user.setId(UUID.randomUUID());
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRoleId(roleService.findRoleByName("ROLE_USER").getId());
-        user.setActive(true);
-        user.setIsInsert(true);
-        userRepository.save(user);
+        if (!isPresent(userDto.getLogin())) {
+            User user = userMapper.toUser(userDto);
+            user.setId(UUID.randomUUID());
+            user.setRoleId(roleService.findRoleByName("ROLE_USER").getId());
+            user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+            user.setActive(true);
+            user.setIsInsert(true);
+            userRepository.save(user);
+        } else {throw new IllegalArgumentException("That login are used already");}
     }
 
     @Transactional
@@ -65,12 +67,15 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
-        User user = userRepository.findUserByLogin(login).orElseThrow();
+        User user = userRepository.findUserByLogin(login).get();
+        System.err.println(user.getLogin());
         return new org.springframework.security.core.userdetails.User(
                 user.getLogin(),
                 user.getPassword(),
                 Collections.singleton(new SimpleGrantedAuthority(roleService.findRoleById(user.getRoleId()).getName())));
     }
 
-
+    public boolean isPresent(String login) {
+        return userRepository.existsByLogin(login);
+    }
 }

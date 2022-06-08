@@ -1,6 +1,5 @@
-package inside.test.configs;
+package ru.ballack17.annet.configs;
 
-import inside.test.utils.JwtTokenUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +8,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import ru.ballack17.annet.configs.utils.JwtTokenUtil;
+
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -17,9 +18,6 @@ import java.io.IOException;
 import java.util.stream.Collectors;
 
 
-/**
- * Настройка входящего фильтра, проверяет Header запроса, токен должен начинаться с "Bearer_"
- * */
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -34,7 +32,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         String username = null;
         String jwt = null;
 
-        if (authHeader != null && authHeader.startsWith("Bearer_")) {
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
             jwt = authHeader.substring(7);
             try {
                 username = jwtTokenUtil.getNameFromToken(jwt);

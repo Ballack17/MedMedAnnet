@@ -1,0 +1,22 @@
+version: "3.7"
+services:
+  api_service:
+    image: "ballack17/medannet:latest"
+    restart: always
+    ports:
+      - 8187:8187
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres/postgres
+    depends_on:
+      - postgres
+
+  postgres:
+    image: "postgres:13.3"
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+     POSTGRES_USER: postgres
+     POSTGRES_DB: postgres
+     POSTGRES_PASSWORD: Ltnjxrf1
+     POSTGRES_HOST_AUTH_METHOD: trust
